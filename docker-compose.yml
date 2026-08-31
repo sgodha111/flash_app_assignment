@@ -1,0 +1,69 @@
+version: "3.8"
+
+services:
+  mongodb:
+    image: mongo:7.0
+    container_name: antonie-mongodb
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_DATABASE: antonie_books
+    volumes:
+      - mongodb_data:/data/db
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - antonie-network
+
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: antonie-api
+    ports:
+      - "8000:8000"
+    environment:
+      ENVIRONMENT: development
+      MONGO_URI: mongodb://mongodb:27017
+      DATABASE_NAME: antonie_books
+      API_HOST: 0.0.0.0
+      API_PORT: 8000
+    depends_on:
+      - mongodb
+    volumes:
+      - .:/app
+    command: python -m uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+    networks:
+      - antonie-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile.frontend
+    container_name: antonie-frontend
+    ports:
+      - "8501:8501"
+    environment:
+      ENVIRONMENT: development
+      API_BASE_URL: http://api:8000
+    depends_on:
+      - api
+    volumes:
+      - .:/app
+    networks:
+      - antonie-network
+
+volumes:
+  mongodb_data:
+
+networks:
+  antonie-network:
+    driver: bridge
