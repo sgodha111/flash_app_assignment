@@ -20,6 +20,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+    image: book-library-api:latest
     container_name: book-library-api
     ports:
       - "8000:8000"
@@ -46,6 +47,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile.frontend
+    image: book-library-frontend:latest
     container_name: book-library-frontend
     ports:
       - "8501:8501"
