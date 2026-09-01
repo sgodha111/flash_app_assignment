@@ -39,17 +39,12 @@ async def get_author_service(
 async def create_author(
     author: AuthorCreate, service: AuthorService = Depends(get_author_service)
 ) -> AuthorResponse:
-    """Create a new author.
-
-    - **id**: Unique integer identifier (must be positive)
-    - **name**: Author name (required)
-    - **birth_date**: Birth date in ISO format (optional)
-    """
+    """Create a new author."""
     try:
         return await service.create_author(author)
     except ValueError as e:
         if "already exists" in str(e):
-            logger.warning(f"Conflict creating author: {e}")
+            logger.warning(f"Duplicate author: {e}")
             raise HTTPException(status_code=409, detail=str(e))
         raise
     except Exception as e:

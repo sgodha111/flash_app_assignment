@@ -1,4 +1,4 @@
-# Antonie Book Catalog API
+# Book Library API
 
 A production-ready REST API for managing books and authors, built with FastAPI, MongoDB, and Streamlit frontend.
 
@@ -9,7 +9,7 @@ A production-ready REST API for managing books and authors, built with FastAPI, 
 ```bash
 # Clone the repository
 git clone <repository-url>
-cd antonie-books
+cd book-library
 
 # Create environment file
 cp .env.example .env
@@ -243,7 +243,7 @@ pip install -r requirements.txt
 
 # Set environment variables
 export MONGO_URI="mongodb://localhost:27017"
-export DATABASE_NAME="antonie_books"
+export DATABASE_NAME="book_library"
 export ENVIRONMENT="development"
 
 # Run MongoDB (if not using Docker)
@@ -325,7 +325,7 @@ pytest tests/integration/ -v
 # Core
 ENVIRONMENT=development|production|testing
 MONGO_URI=mongodb://localhost:27017
-DATABASE_NAME=antonie_books
+DATABASE_NAME=book_library
 
 # API
 API_HOST=0.0.0.0
@@ -584,13 +584,13 @@ See [terraform/README.md](terraform/README.md) for:
 
 ```bash
 # Build image
-docker build -t antonie-api:latest .
+docker build -t book-library-api:latest .
 
 # Tag for registry
-docker tag antonie-api:latest <registry>/antonie-api:latest
+docker tag book-library-api:latest <registry>/book-library-api:latest
 
 # Push
-docker push <registry>/antonie-api:latest
+docker push <registry>/book-library-api:latest
 
 # Deploy (depends on your infrastructure)
 ```
@@ -625,7 +625,7 @@ docker push <registry>/antonie-api:latest
 
 CloudWatch monitors:
 - **Metrics:** CPU, memory, network
-- **Logs:** Application logs in `/ecs/antonie-books`
+- **Logs:** Application logs in `/ecs/book-library`
 - **Alarms:** Can be configured for thresholds
 
 ## Troubleshooting
@@ -636,7 +636,7 @@ CloudWatch monitors:
 docker ps | grep mongodb
 
 # Check MongoDB logs
-docker logs antonie-mongodb
+docker logs book-library-mongodb
 
 # Verify connection string
 echo $MONGO_URI
@@ -645,7 +645,7 @@ echo $MONGO_URI
 ### API Not Starting
 ```bash
 # Check logs
-docker logs antonie-api
+docker logs book-library-api
 
 # Verify environment variables
 docker-compose exec api printenv | grep MONGO
@@ -666,7 +666,7 @@ pytest tests/ -vvs
 curl http://localhost:8000/health
 
 # Check Streamlit configuration
-docker logs antonie-frontend
+docker logs book-library-frontend
 ```
 
 ## Design Decisions
@@ -741,7 +741,7 @@ docker logs antonie-frontend
 
 ## License
 
-Proprietary - Antonie
+Proprietary - Book Library
 
 ## Support
 

@@ -50,30 +50,17 @@ async def get_next_book_id(
 async def create_book(
     book: BookCreate, service: BookService = Depends(get_book_service)
 ) -> BookResponse:
-    """Create a new book.
-
-    - **id**: Unique integer identifier (must be positive)
-    - **title**: Book title (required)
-    - **author_id**: ID of the book's author (must exist)
-    - **publisher**: Publisher name (required)
-    - **pages**: Number of pages (positive integer)
-    - **tags**: List of tags (optional)
-    """
+    """Create a new book."""
     try:
         return await service.create_book(book)
     except ValueError as e:
-        if "already exists" in str(e):
-            logger.warning(f"Conflict creating book: {e}")
-            raise HTTPException(
-                status_code=409,
-                detail=str(e),
-            )
-        elif "does not exist" in str(e):
-            logger.warning(f"Validation error creating book: {e}")
-            raise HTTPException(
-                status_code=422,
-                detail=str(e),
-            )
+        error_msg = str(e)
+        if "already exists" in error_msg:
+            logger.warning(f"Duplicate book ID: {error_msg}")
+            raise HTTPException(status_code=409, detail=error_msg)
+        elif "does not exist" in error_msg:
+            logger.warning(f"Validation error: {error_msg}")
+            raise HTTPException(status_code=422, detail=error_msg)
         raise
     except Exception as e:
         logger.error(f"Error creating book: {e}")
@@ -113,21 +100,7 @@ async def list_books(
     tags: Optional[List[str]] = Query(None),
     service: BookService = Depends(get_book_service),
 ) -> BookListResponse:
-    """List books with pagination and filtering.
-
-    **Query Parameters:**
-    - **page**: Page number (default: 1)
-    - **limit**: Items per page (default: 10, max: 100)
-    - **author_id**: Filter by author ID
-    - **title**: Filter by book title (partial match, case-insensitive)
-    - **tags**: Filter by tags (can specify multiple)
-
-    **Example:**
-    - `/books?page=1&limit=10`
-    - `/books?author_id=1&page=1`
-    - `/books?title=Python&limit=20`
-    - `/books?tags=Python&tags=Development`
-    """
+    """List books with pagination and filtering."""
     try:
         return await service.list_books(
             page=page,
@@ -154,29 +127,19 @@ async def update_book(
     book_update: BookUpdate = None,
     service: BookService = Depends(get_book_service),
 ) -> BookResponse:
-    """Update an existing book (partial update).
-
-    Only provided fields will be updated. The `updated_at` timestamp is automatically set.
-
-    **Request Body (all optional):**
-    - **title**: New book title
-    - **author_id**: New author ID (must exist)
-    - **publisher**: New publisher name
-    - **pages**: New page count
-    - **tags**: New tags list
-    """
+    """Update an existing book (partial update)."""
     if book_update is None:
         book_update = BookUpdate()
 
     try:
         return await service.update_book(book_id, book_update)
     except ValueError as e:
-        if "not found" in str(e):
-            logger.warning(f"Book not found: {e}")
-            raise HTTPException(status_code=404, detail=str(e))
-        else:
-            logger.warning(f"Validation error updating book: {e}")
-            raise HTTPException(status_code=422, detail=str(e))
+        error_msg = str(e)
+        if "not found" in error_msg:
+            logger.warning(f"Book not found: {error_msg}")
+            raise HTTPException(status_code=404, detail=error_msg)
+        logger.warning(f"Validation error: {error_msg}")
+        raise HTTPException(status_code=422, detail=error_msg)
     except Exception as e:
         logger.error(f"Error updating book: {e}")
         raise HTTPException(status_code=500, detail="Internal server error")

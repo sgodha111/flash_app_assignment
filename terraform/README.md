@@ -1,6 +1,6 @@
-# Antonie Book Catalog - AWS Infrastructure (Terraform)
+# Book Library Catalog - AWS Infrastructure (Terraform)
 
-This directory contains Terraform infrastructure-as-code for deploying the Antonie Book Catalog API to AWS.
+This directory contains Terraform infrastructure-as-code for deploying the Book Library API to AWS.
 
 ## Architecture Overview
 
@@ -57,17 +57,17 @@ terraform/
 
 ```bash
 # Build image
-docker build -t antonie-books:latest .
+docker build -t book-library:latest .
 
 # Tag for ECR (after creating ECR repo via Terraform apply)
-docker tag antonie-books:latest <account-id>.dkr.ecr.<region>.amazonaws.com/antonie-books-api:latest
+docker tag book-library:latest <account-id>.dkr.ecr.<region>.amazonaws.com/book-library-api:latest
 
 # Login to ECR
 aws ecr get-login-password --region us-east-1 | \
   docker login --username AWS --password-stdin <account-id>.dkr.ecr.<region>.amazonaws.com
 
 # Push image
-docker push <account-id>.dkr.ecr.<region>.amazonaws.com/antonie-books-api:latest
+docker push <account-id>.dkr.ecr.<region>.amazonaws.com/book-library-api:latest
 ```
 
 ### 3. Initialize Terraform
@@ -80,8 +80,8 @@ terraform init
 
 ```hcl
 aws_region        = "us-east-1"
-container_image   = "<account-id>.dkr.ecr.us-east-1.amazonaws.com/antonie-books-api:latest"
-mongodb_atlas_uri = "mongodb+srv://user:password@cluster.mongodb.net/antonie_books?retryWrites=true&w=majority"
+container_image   = "<account-id>.dkr.ecr.us-east-1.amazonaws.com/book-library-api:latest"
+mongodb_atlas_uri = "mongodb+srv://user:password@cluster.mongodb.net/book_library?retryWrites=true&w=majority"
 ```
 
 **IMPORTANT:** Never commit `terraform.tfvars` with real credentials. Use environment variables instead:
@@ -151,7 +151,7 @@ Access via: `http://<alb-dns-name>/docs`
   - `API_PORT`
 - **Secrets:**
   - `MONGO_URI` (stored in AWS Secrets Manager)
-- **Logging:** CloudWatch Logs (group: `/ecs/antonie-books`)
+- **Logging:** CloudWatch Logs (group: `/ecs/book-library`)
 - **Health Check:** Curl to `/health` endpoint
 
 ### MongoDB Connection
@@ -165,7 +165,7 @@ Access via: `http://<alb-dns-name>/docs`
 - **Lifecycle Policy:** Keeps 10 latest tagged images, removes untagged after 7 days
 
 ### Logging
-- **CloudWatch Logs:** `/ecs/antonie-books`
+- **CloudWatch Logs:** `/ecs/book-library`
 - **Retention:** 30 days
 - **Access:** Via AWS Console or CLI
 
@@ -241,7 +241,7 @@ Use `terraform plan` to estimate exact costs.
 ### Logs
 View logs:
 ```bash
-aws logs tail /ecs/antonie-books --follow
+aws logs tail /ecs/book-library --follow
 ```
 
 ### Health Checks
@@ -260,10 +260,10 @@ ALB monitors ECS task health via `/health` endpoint.
 ### Task fails to start
 ```bash
 # Check logs
-aws logs tail /ecs/antonie-books --follow
+aws logs tail /ecs/book-library --follow
 
 # Check task status
-aws ecs describe-tasks --cluster antonie-books-cluster --tasks <task-id>
+aws ecs describe-tasks --cluster book-library-cluster --tasks <task-id>
 ```
 
 ### ALB not routing to tasks

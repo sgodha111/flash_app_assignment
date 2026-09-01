@@ -12,7 +12,7 @@ on:
 
 env:
   REGISTRY: ghcr.io
-  IMAGE_NAME: ${{ github.repository }}/antonie-api
+  IMAGE_NAME: ${{ github.repository }}/book-library-api
 
 jobs:
   lint:
@@ -72,7 +72,7 @@ jobs:
       - name: Run tests with coverage
         env:
           MONGO_URI: mongodb://localhost:27017
-          DATABASE_NAME: antonie_books_test
+          DATABASE_NAME: book_library_test
           ENVIRONMENT: testing
         run: |
           pytest tests/ \
@@ -180,6 +180,6 @@ jobs:
   #     - name: Update ECS service
   #       run: |
   #         aws ecs update-service \
-  #           --cluster antonie-books-cluster \
-  #           --service antonie-books-service \
+  #           --cluster book-library-cluster \
+  #           --service book-library-service \
   #           --force-new-deployment

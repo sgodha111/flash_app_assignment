@@ -18,7 +18,7 @@ async def health() -> dict:
 
     Returns a simple response indicating the API is running.
     """
-    return {"status": "healthy", "service": "Antonie Book Catalog API"}
+    return {"status": "healthy", "service": "Book Library API"}
 
 
 @router.get("/ready")
@@ -32,7 +32,7 @@ async def ready(db: "AsyncDatabase" = Depends(get_database)) -> dict:
         collections = await db.list_collection_names()
         return {
             "status": "ready",
-            "service": "Antonie Book Catalog API",
+            "service": "Book Library API",
             "database": "connected",
             "collections": len(collections),
         }

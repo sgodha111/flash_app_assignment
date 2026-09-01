@@ -13,10 +13,26 @@ logger = logging.getLogger(__name__)
 class APIClient:
     """Client for FastAPI backend."""
 
-    def __init__(self, base_url: str = None):
+    def __init__(self, base_url: str = None, token: str = None):
         """Initialize API client."""
         self.base_url = base_url or settings.API_BASE_URL
+        self.token = token
         self.session = requests.Session()
+        self._update_headers()
+
+    def _update_headers(self):
+        """Update session headers with auth token."""
+        if self.token:
+            self.session.headers.update({
+                "Authorization": f"Bearer {self.token}"
+            })
+        else:
+            self.session.headers.pop("Authorization", None)
+
+    def set_token(self, token: str):
+        """Set the authentication token."""
+        self.token = token
+        self._update_headers()
 
     def health(self) -> dict:
         """Check API health."""
@@ -112,22 +128,30 @@ class APIClient:
         return response.json()
 
     # Publisher operations
-    def get_publisher_average_pages(self, publisher_name: str) -> dict:
-        """Get average pages for a publisher."""
+    def get_publisher_stats(self, publisher_name: str) -> dict:
+        """Get publisher statistics including average pages."""
         response = self.session.get(
             f"{self.base_url}/publishers/{publisher_name}/average_pages"
         )
         response.raise_for_status()
         return response.json()
 
+    def get_publisher_average_pages(self, publisher_name: str) -> dict:
+        """Get average pages for a publisher (alias for get_publisher_stats)."""
+        return self.get_publisher_stats(publisher_name)
+
 
 # Global client instance
 _client: Optional[APIClient] = None
 
 
-def get_client() -> APIClient:
+def get_client(token: str = None) -> APIClient:
     """Get or create API client."""
     global _client
     if _client is None:
-        _client = APIClient()
+        _client = APIClient(token=token)
+    else:
+        # Update token if provided
+        if token:
+            _client.set_token(token)
     return _client

@@ -10,6 +10,16 @@ import pytest
 from app.config import settings
 from app.database.mongodb import MongoDB
 
+# Counter for generating unique test IDs
+_test_counter = 0
+
+
+def get_unique_id():
+    """Get unique test ID."""
+    global _test_counter
+    _test_counter += 1
+    return _test_counter
+
 
 @pytest.fixture(scope="session")
 def event_loop():
@@ -19,32 +29,41 @@ def event_loop():
     loop.close()
 
 
+@pytest.fixture(autouse=True)
+async def reset_test_counter():
+    """Reset test counter before each test."""
+    global _test_counter
+    _test_counter = 0
+    yield
+
+
 @pytest.fixture
 async def db():
-    """Provide a test database."""
+    """Provide a clean test database."""
     # Use test database
     os.environ["ENVIRONMENT"] = "testing"
-    os.environ["DATABASE_NAME"] = "antonie_books_test"
+    os.environ["DATABASE_NAME"] = "book_library_test"
 
     # Connect to MongoDB
     db_instance = await MongoDB.connect()
 
     # Clean up database before test
-    await db_instance.client.drop_database("antonie_books_test")
-    await MongoDB.connect()  # Recreate with empty database
+    await db_instance.client.drop_database("book_library_test")
+    db_instance = await MongoDB.connect()  # Recreate with empty database
 
     yield db_instance
 
     # Clean up after test
-    await db_instance.client.drop_database("antonie_books_test")
+    await db_instance.client.drop_database("book_library_test")
     await MongoDB.disconnect()
 
 
 @pytest.fixture
 async def sample_author_data(db) -> dict:
-    """Create a sample author."""
+    """Create a sample author with unique ID."""
+    author_id = get_unique_id()
     author = {
-        "id": 1,
+        "id": author_id,
         "name": "Mark Lutz",
         "birth_date": date(1957, 1, 1),
     }
@@ -54,11 +73,12 @@ async def sample_author_data(db) -> dict:
 
 @pytest.fixture
 async def sample_book_data(db, sample_author_data: dict) -> dict:
-    """Create a sample book."""
+    """Create a sample book with unique ID."""
     from datetime import datetime, timezone
 
+    book_id = get_unique_id()
     book = {
-        "id": 1,
+        "id": book_id,
         "title": "Learning Python",
         "author_id": sample_author_data["id"],
         "publisher": "O'Reilly Media",
@@ -73,21 +93,31 @@ async def sample_book_data(db, sample_author_data: dict) -> dict:
 
 @pytest.fixture
 async def sample_author_with_books(db) -> dict:
-    """Create sample authors and books."""
+    """Create sample authors and books with unique IDs."""
     from datetime import datetime, timezone
 
+    base_id = get_unique_id() * 100  # Use multiplied ID to avoid collisions
+
     authors = [
-        {"id": 1, "name": "Mark Lutz", "birth_date": date(1957, 1, 1)},
-        {"id": 2, "name": "Harry Percival", "birth_date": date(1975, 1, 1)},
-        {"id": 3, "name": "No Books Author", "birth_date": date(1980, 1, 1)},
+        {"id": base_id, "name": "Mark Lutz", "birth_date": date(1957, 1, 1)},
+        {
+            "id": base_id + 1,
+            "name": "Harry Percival",
+            "birth_date": date(1975, 1, 1),
+        },
+        {
+            "id": base_id + 2,
+            "name": "No Books Author",
+            "birth_date": date(1980, 1, 1),
+        },
     ]
     await db["authors"].insert_many(authors)
 
     books = [
         {
-            "id": 1,
+            "id": base_id,
             "title": "Learning Python",
-            "author_id": 1,
+            "author_id": base_id,
             "publisher": "O'Reilly Media",
             "pages": 1648,
             "tags": ["Python", "Development"],
@@ -95,9 +125,9 @@ async def sample_author_with_books(db) -> dict:
             "updated_at": datetime.now(timezone.utc),
         },
         {
-            "id": 2,
+            "id": base_id + 1,
             "title": "Python Cookbook",
-            "author_id": 1,
+            "author_id": base_id,
             "publisher": "O'Reilly Media",
             "pages": 656,
             "tags": ["Python", "Recipes"],
@@ -105,9 +135,9 @@ async def sample_author_with_books(db) -> dict:
             "updated_at": datetime.now(timezone.utc),
         },
         {
-            "id": 3,
+            "id": base_id + 2,
             "title": "Architecture Patterns with Python",
-            "author_id": 2,
+            "author_id": base_id + 1,
             "publisher": "O'Reilly Media",
             "pages": 304,
             "tags": ["Python", "Architecture"],

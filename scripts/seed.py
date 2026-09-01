@@ -18,7 +18,7 @@ logger = logging.getLogger(__name__)
 async def seed_database():
     """Seed the database with sample data."""
     mongo_uri = os.getenv("MONGO_URI", "mongodb://localhost:27017")
-    database_name = os.getenv("DATABASE_NAME", "antonie_books")
+    database_name = os.getenv("DATABASE_NAME", "book_library")
 
     logger.info(f"Connecting to MongoDB at {mongo_uri}")
     client = AsyncIOMotorClient(mongo_uri)

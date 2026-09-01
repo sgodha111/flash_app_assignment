@@ -1,1 +1,1 @@
-"""Antonie Book Catalog API."""
+"""Book Library API."""

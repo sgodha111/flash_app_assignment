@@ -20,7 +20,7 @@ class Settings:
 
     # MongoDB
     MONGO_URI: str = os.getenv("MONGO_URI", "mongodb://localhost:27017")
-    DATABASE_NAME: str = os.getenv("DATABASE_NAME", "antonie_books")
+    DATABASE_NAME: str = os.getenv("DATABASE_NAME", "book_library")
 
     # API
     API_HOST: str = os.getenv("API_HOST", "0.0.0.0")
@@ -33,6 +33,15 @@ class Settings:
 
     # Frontend
     API_BASE_URL: str = os.getenv("API_BASE_URL", "http://localhost:8000")
+
+    # JWT
+    JWT_SECRET_KEY: str = os.getenv(
+        "JWT_SECRET_KEY",
+        "your-secret-key-change-in-production-min-32-chars-123456789"
+    )
+    JWT_ALGORITHM: str = "HS256"
+    JWT_EXPIRATION_HOURS: int = 24
+    JWT_REFRESH_EXPIRATION_DAYS: int = 7
 
     @classmethod
     def is_development(cls) -> bool:

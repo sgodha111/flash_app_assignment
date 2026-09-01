@@ -1,4 +1,4 @@
-"""Streamlit frontend for Antonie Book Catalog API."""
+"""Streamlit frontend for Book Library API."""
 
 import logging
 from datetime import date
@@ -17,7 +17,7 @@ logger = logging.getLogger(__name__)
 
 # Configure Streamlit page
 st.set_page_config(
-    page_title="Antonie Book Catalog",
+    page_title="Book Library Catalog",
     page_icon="📚",
     layout="wide",
     initial_sidebar_state="expanded",
@@ -35,7 +35,7 @@ st.markdown(
 )
 
 # Title
-st.title("📚 Antonie Book Catalog")
+st.title("📚 Book Library Catalog")
 st.subheader("Manage Books and Authors")
 
 # Check API connectivity
@@ -412,4 +412,4 @@ elif page == "Publishers":
 
 
 st.divider()
-st.caption("Antonie Book Catalog - Built with Streamlit & FastAPI")
+st.caption("Book Library Catalog - Built with Streamlit & FastAPI")
