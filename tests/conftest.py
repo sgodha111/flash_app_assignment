@@ -2,7 +2,7 @@
 
 import asyncio
 import os
-from datetime import date
+from datetime import datetime, timezone
 from typing import AsyncGenerator
 
 import pytest
@@ -47,15 +47,15 @@ async def db():
     # Connect to MongoDB
     db_instance = await MongoDB.connect()
 
-    # Clean up database before test
-    await db_instance.client.drop_database("book_library_test")
-    db_instance = await MongoDB.connect()  # Recreate with empty database
+    # Clean up all collections before test
+    for collection_name in await db_instance.list_collection_names():
+        await db_instance[collection_name].delete_many({})
 
     yield db_instance
 
-    # Clean up after test
-    await db_instance.client.drop_database("book_library_test")
-    await MongoDB.disconnect()
+    # Clean up all collections after test
+    for collection_name in await db_instance.list_collection_names():
+        await db_instance[collection_name].delete_many({})
 
 
 @pytest.fixture
@@ -65,7 +65,7 @@ async def sample_author_data(db) -> dict:
     author = {
         "id": author_id,
         "name": "Mark Lutz",
-        "birth_date": date(1957, 1, 1),
+        "birth_date": datetime(1957, 1, 1, tzinfo=timezone.utc),
     }
     await db["authors"].insert_one(author)
     return author
@@ -94,21 +94,19 @@ async def sample_book_data(db, sample_author_data: dict) -> dict:
 @pytest.fixture
 async def sample_author_with_books(db) -> dict:
     """Create sample authors and books with unique IDs."""
-    from datetime import datetime, timezone
-
     base_id = get_unique_id() * 100  # Use multiplied ID to avoid collisions
 
     authors = [
-        {"id": base_id, "name": "Mark Lutz", "birth_date": date(1957, 1, 1)},
+        {"id": base_id, "name": "Mark Lutz", "birth_date": datetime(1957, 1, 1, tzinfo=timezone.utc)},
         {
             "id": base_id + 1,
             "name": "Harry Percival",
-            "birth_date": date(1975, 1, 1),
+            "birth_date": datetime(1975, 1, 1, tzinfo=timezone.utc),
         },
         {
             "id": base_id + 2,
             "name": "No Books Author",
-            "birth_date": date(1980, 1, 1),
+            "birth_date": datetime(1980, 1, 1, tzinfo=timezone.utc),
         },
     ]
     await db["authors"].insert_many(authors)
