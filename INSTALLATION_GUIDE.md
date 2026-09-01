@@ -78,6 +78,69 @@ This way users see sample data when they first login, so Authors dropdown is pre
 
 ---
 
+## 🧪 Run Tests (Optional - For Developers)
+
+### Prerequisites for Testing
+- Python 3.11+ installed locally
+- Virtual environment (recommended)
+
+### Setup Test Environment
+
+```bash
+# Create virtual environment (optional but recommended)
+python3 -m venv venv
+source venv/bin/activate  # On Windows: venv\Scripts\activate
+
+# Install dependencies
+pip install -r requirements.txt
+```
+
+### Run All Tests
+
+```bash
+pytest tests/ -v
+```
+
+**Expected output**:
+```
+===================== 21 passed, 1 skipped =====================
+```
+
+### Run Tests with Coverage Report
+
+```bash
+pytest tests/ -v --cov=app --cov-report=term-missing
+```
+
+Shows code coverage percentage for each module.
+
+### Run Specific Test Categories
+
+```bash
+# Unit tests only
+pytest tests/unit/ -v
+
+# Integration tests only
+pytest tests/integration/ -v
+
+# Specific test file
+pytest tests/unit/test_book_service.py -v
+
+# Specific test
+pytest tests/unit/test_book_service.py::test_book_service_get_all_books -v
+```
+
+### Test Coverage Summary
+
+- **Total Tests**: 22 (21 passing, 1 skipped)
+- **Code Coverage**: 59%
+- **Unit Tests**: 5 tests for BookService
+- **Integration Tests**: 16 tests for API endpoints
+
+**Skipped tests**: Login test requires real database with seeded users (runs in CI/CD pipeline)
+
+---
+
 ## 🎉 Access Application
 
 ### First Login
@@ -142,6 +205,25 @@ docker images | grep book-library
 docker volume ls | grep book-library
 ```
 
+---
+
+## 🧪 Test Troubleshooting
+
+**Tests fail to run**
+- Install test dependencies: `pip install -r requirements.txt`
+- Ensure Python 3.11+ is installed: `python3 --version`
+
+**Tests timeout or hang**
+- Increase timeout: `pytest tests/ -v --timeout=30`
+
+**Coverage report missing**
+- Install coverage: `pip install pytest-cov`
+
+**Import errors when running tests**
+- Ensure you're in the project root directory
+- Check virtual environment is activated
+
+---
 
 ## ⚠️ Installation Issues
 
@@ -173,12 +255,29 @@ docker volume ls | grep book-library
 
 ---
 
+## 🔄 Automated Testing in CI/CD
+
+When you push code to GitHub, the CI/CD pipeline automatically runs:
+
+1. **Formatting Check** - Black & isort
+2. **Linting** - Pylint & mypy  
+3. **Unit & Integration Tests** - 21 pytest tests
+4. **Security Scan** - Bandit & Safety
+5. **Docker Build** - Build Docker image
+
+All steps must pass before merging to main branch.
+
+**Check CI/CD Status**: GitHub Actions tab in your repository
+
+---
+
 ## 📚 Next Steps
 
 1. **Login** to dashboard: http://localhost:8501
 2. **Read** [USER_GUIDE.md](USER_GUIDE.md) for dashboard guide
 3. **Check** [QUICK_REFERENCE.md](QUICK_REFERENCE.md) for quick lookup
 4. **Explore** all 5 dashboard pages
+5. **Run tests** to verify setup (see Testing section above)
 
 ---
 
