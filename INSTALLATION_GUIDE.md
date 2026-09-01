@@ -287,7 +287,6 @@ All steps must pass before merging to main branch.
 - **USER_GUIDE.md** - Dashboard guide  
 - **API_REFERENCE.md** - API documentation
 - **QUICK_REFERENCE.md** - Quick lookup
-- **DOCUMENTATION_INDEX.md** - Navigation guide
 
 ---
 

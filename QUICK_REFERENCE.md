@@ -94,7 +94,6 @@ Other users: john@, jane@, developer@, demo@ → passwords: john@1234, jane@1234
 | Overview | README.md | 5 min |
 | Dashboard | USER_GUIDE.md | 15 min |
 | API | API_REFERENCE.md | 10 min |
-| Navigation | DOCUMENTATION_INDEX.md | 5 min |
 | Setup | INSTALLATION_GUIDE.md | 5 min |
 
 ---

@@ -103,7 +103,6 @@ Streamlit Frontend (8501)
 ├── USER_GUIDE.md               ← Dashboard guide
 ├── API_REFERENCE.md            ← API documentation
 ├── QUICK_REFERENCE.md          ← One-page cheat sheet
-├── DOCUMENTATION_INDEX.md      ← Navigation guide
 ├── docker-compose.yml          ← Container config
 ├── Dockerfile                  ← API container
 ├── Dockerfile.frontend         ← Frontend container
@@ -202,14 +201,12 @@ All users have full access to all features.
 | **USER_GUIDE.md** | Complete dashboard guide | 15 min |
 | **API_REFERENCE.md** | API endpoints & integration | 10 min |
 | **QUICK_REFERENCE.md** | One-page cheat sheet | 2 min |
-| **DOCUMENTATION_INDEX.md** | Navigation & reading paths | 5 min |
 
 **Getting Started**:
 1. First time? → Start with [INSTALLATION_GUIDE.md](INSTALLATION_GUIDE.md)
 2. Want to use dashboard? → Read [USER_GUIDE.md](USER_GUIDE.md)
 3. Building with API? → Check [API_REFERENCE.md](API_REFERENCE.md)
 4. Need quick help? → See [QUICK_REFERENCE.md](QUICK_REFERENCE.md)
-5. Lost? → Read [DOCUMENTATION_INDEX.md](DOCUMENTATION_INDEX.md)
 
 ---
 
