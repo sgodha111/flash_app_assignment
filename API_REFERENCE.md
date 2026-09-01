@@ -1,241 +1,528 @@
-# 📚 Book Catalog API - Complete Reference Guide
+# 📡 Book Library API - Complete Reference
 
-## 🚀 Quick Start
-
-**Frontend**: http://localhost:8501  
-**Swagger API Docs**: http://localhost:8000/docs  
-**API Base URL**: http://localhost:8000
+Complete API documentation for developers and advanced users.
 
 ---
 
-## 📋 All API Endpoints (13 Total)
+## Quick Access
+
+| Item | Location |
+|------|----------|
+| **Swagger UI** | http://localhost:8000/docs |
+| **Redoc** | http://localhost:8000/redoc |
+| **Base URL** | http://localhost:8000 |
+| **Health** | http://localhost:8000/health |
+
+---
+
+## API Endpoints (13 Total)
 
 ### Health & Status (2)
+
 ```
-GET /health                          → Check if API is running
-GET /ready                           → Check if database is connected
+GET /health
+Response: {"status":"healthy","service":"Book Library API"}
+Purpose: Quick health check
 ```
 
-### Books Management (6)
 ```
-GET  /books/next-id                  → Get next sequential book ID ⭐ NEW
-POST /books                          → Create new book
-GET  /books                          → List books (with filters & pagination)
-GET  /books/{id}                     → Get specific book
-PATCH /books/{id}                    → Update book
-DELETE /books/{id}                   → Delete book
-```
-
-### Authors Management (4)
-```
-POST /authors                        → Create author
-GET  /authors/{id}                   → Get author by ID
-GET  /authors                        → List authors
-GET  /authors/{id}/books             → Get all books by author
-```
-
-### Publishers (1)
-```
-GET /publishers/{name}/average_pages → Get publisher statistics
+GET /ready
+Response: {"status":"ready","database":"connected"}
+Purpose: Check if API ready (database connected)
 ```
 
 ---
 
-## 🔗 Important URLs
+### Books Endpoints (6)
 
-### Main Access Points
-| Purpose | URL |
-|---------|-----|
-| Frontend App | http://localhost:8501 |
-| Swagger UI | http://localhost:8000/docs |
-| API Base | http://localhost:8000 |
-| Health Check | http://localhost:8000/health |
-| Next Book ID | http://localhost:8000/books/next-id |
+#### Get Next Book ID
+```
+GET /books/next-id
+Response: {"next_id": 2}
+Purpose: Get auto-generated ID for new book
+```
 
-### Example URLs
-```bash
-# List all books
-http://localhost:8000/books
+#### Create Book
+```
+POST /books
+Content-Type: application/json
 
-# List with pagination
-http://localhost:8000/books?page=2&limit=20
+Request:
+{
+  "title": "Book Title",
+  "pages": 300,
+  "author_id": 1,
+  "publisher": "Publisher Name",
+  "tags": ["tag1", "tag2"]
+}
 
-# Filter by author
-http://localhost:8000/books?author_id=1
+Response: 201 Created
+{
+  "id": 2,
+  "title": "Book Title",
+  "pages": 300,
+  "author_id": 1,
+  "publisher": "Publisher Name",
+  "tags": ["tag1", "tag2"]
+}
+```
 
-# Search by title
-http://localhost:8000/books?title=Python
+#### List Books
+```
+GET /books?page=1&limit=10&author_id=1&title="search"
 
-# Filter by tags
-http://localhost:8000/books?tags=Fiction&tags=Classic
+Query Parameters:
+- page: Page number (default: 1)
+- limit: Items per page (default: 10)
+- author_id: Filter by author (optional)
+- title: Search by title (optional)
 
-# Get specific book
-http://localhost:8000/books/1
+Response: 200 OK
+{
+  "total": 5,
+  "page": 1,
+  "limit": 10,
+  "items": [
+    {
+      "id": 1,
+      "title": "Book Title",
+      "pages": 300,
+      "author_id": 1,
+      "publisher": "Publisher"
+    }
+  ]
+}
+```
 
-# Get author's books
-http://localhost:8000/authors/1/books
+#### Get Specific Book
+```
+GET /books/{id}
+
+Response: 200 OK
+{
+  "id": 1,
+  "title": "Book Title",
+  "pages": 300,
+  "author_id": 1,
+  "publisher": "Publisher"
+}
+```
+
+#### Update Book
+```
+PATCH /books/{id}
+Content-Type: application/json
+
+Request:
+{
+  "title": "New Title",
+  "pages": 350
+}
+
+Response: 200 OK
+{
+  "id": 1,
+  "title": "New Title",
+  "pages": 350,
+  "author_id": 1,
+  "publisher": "Publisher"
+}
+```
+
+#### Delete Book
+```
+DELETE /books/{id}
+
+Response: 204 No Content
 ```
 
 ---
 
-## 💻 API Usage Examples
+### Authors Endpoints (4)
 
-### Using cURL
+#### Create Author
+```
+POST /authors
+Content-Type: application/json
 
-**Get Next Book ID**
-```bash
-curl -s http://localhost:8000/books/next-id | jq .
+Request:
+{
+  "id": 1,
+  "name": "Author Name",
+  "birth_date": "1965-07-31"
+}
+
+Response: 201 Created
+{
+  "id": 1,
+  "name": "Author Name",
+  "birth_date": "1965-07-31"
+}
 ```
 
-**Create Book**
-```bash
-curl -X POST http://localhost:8000/books \
-  -H "Content-Type: application/json" \
-  -d '{
-    "id": 107,
-    "title": "The Great Gatsby",
-    "author_id": 1,
-    "publisher": "Penguin Books",
-    "pages": 180,
-    "tags": ["Fiction", "Classic"]
-  }' | jq .
+#### Get Author
+```
+GET /authors/{id}
+
+Response: 200 OK
+{
+  "id": 1,
+  "name": "Author Name",
+  "birth_date": "1965-07-31"
+}
 ```
 
-**List Books**
-```bash
-curl -s "http://localhost:8000/books?limit=10" | jq .
+#### List Authors
+```
+GET /authors?page=1&limit=10
+
+Response: 200 OK
+{
+  "total": 5,
+  "page": 1,
+  "limit": 10,
+  "items": [
+    {
+      "id": 1,
+      "name": "Author Name",
+      "birth_date": "1965-07-31"
+    }
+  ]
+}
 ```
 
-**Update Book**
-```bash
-curl -X PATCH http://localhost:8000/books/1 \
-  -H "Content-Type: application/json" \
-  -d '{"title": "Updated Title", "pages": 200}' | jq .
+#### Get Author's Books
 ```
+GET /authors/{id}/books
 
-**Delete Book**
-```bash
-curl -X DELETE http://localhost:8000/books/1
-```
-
-### Using Python/Streamlit
-```python
-from frontend.api_client import get_client
-
-client = get_client()
-
-# Get next ID
-next_id = client.get_next_book_id()["next_id"]
-
-# Create book
-book = client.create_book({
-    "id": next_id,
+Response: 200 OK
+[
+  {
+    "id": 1,
     "title": "Book Title",
-    "author_id": 1,
-    "publisher": "Publisher",
     "pages": 300,
-    "tags": ["tag1", "tag2"]
-})
-
-# List books
-books = client.list_books(page=1, limit=10)
-books = client.list_books(author_id=1)
-books = client.list_books(title="Python")
-
-# Update book
-client.update_book(book_id=1, book_data={"title": "New Title"})
-
-# Delete book
-client.delete_book(book_id=1)
-
-# Get author's books
-books = client.get_author_books(author_id=1)
-
-# Publisher stats
-stats = client.get_publisher_average_pages("Penguin")
+    "author_id": 1,
+    "publisher": "Publisher"
+  }
+]
 ```
 
 ---
 
-## 📖 How to Use Swagger UI
+### Publishers Endpoint (1)
 
-1. **Open**: http://localhost:8000/docs
-2. **Find Endpoint**: Scroll to find what you need
-3. **Click "Try it Out"**: Enables the testing form
-4. **Enter Parameters**: Fill in required fields
-5. **Click "Execute"**: Send request
-6. **View Response**: See result in Response section
+#### Get Publisher Statistics
+```
+GET /publishers/{name}/average_pages
 
-### Common Swagger Tests
-- **Health**: GET /health → Click Execute → See {"status": "healthy"}
-- **Next ID**: GET /books/next-id → Click Execute → See {"next_id": 107}
-- **List Books**: GET /books → Optional filters → Click Execute
-- **Create Book**: POST /books → Enter book data → Click Execute
-
----
-
-## 🎯 Key Features
-
-✅ **Auto-Generated Book IDs** - Sequential IDs (1, 2, 3, ...)  
-✅ **Advanced Filtering** - By author, title, tags  
-✅ **Pagination** - Browse large datasets  
-✅ **Form Data Preservation** - Data stays on errors  
-✅ **Real-time Statistics** - Live book/author counts  
-✅ **Interactive Docs** - Swagger UI for testing  
+Response: 200 OK
+{
+  "publisher": "Bloomsbury",
+  "average_pages": 320,
+  "total_books": 5,
+  "books": [
+    {
+      "title": "Harry Potter",
+      "pages": 309
+    }
+  ]
+}
+```
 
 ---
 
-## 📊 Quick Statistics
+## Authentication
 
-| Item | Value |
-|------|-------|
-| Total Endpoints | 13 |
-| Total Books | 9 |
-| Total Authors | 5 |
-| Auto-ID Support | ✅ Yes |
-| API Status | ✅ Healthy |
-| Database | ✅ Connected |
+### Getting Access Token
+
+```
+POST /auth/login
+Content-Type: application/json
+
+Request:
+{
+  "email": "admin@example.com",
+  "password": "admin@123"
+}
+
+Response: 200 OK
+{
+  "access_token": "eyJhbGciOiJIUzI1NiIs...",
+  "refresh_token": "eyJhbGciOiJIUzI1NiIs...",
+  "token_type": "bearer"
+}
+```
+
+### Using Token in Requests
+
+Add to all API requests (except /auth/login, /health):
+
+```
+Headers:
+Authorization: Bearer <access_token>
+```
+
+### Token Details
+
+- **Type**: JWT (JSON Web Token)
+- **Algorithm**: HS256
+- **Access Token**: Expires in 24 hours
+- **Refresh Token**: Expires in 7 days
+
+### Refreshing Token
+
+```
+POST /auth/refresh
+Content-Type: application/json
+
+Request:
+{
+  "refresh_token": "<refresh_token>"
+}
+
+Response: 200 OK
+{
+  "access_token": "new_token",
+  "refresh_token": "new_refresh_token",
+  "token_type": "bearer"
+}
+```
 
 ---
 
-## 🔐 Error Codes
+## Common Response Codes
 
 | Code | Meaning | Example |
 |------|---------|---------|
-| 200 | Success | Book retrieved |
-| 201 | Created | Book created |
-| 204 | No Content | Book deleted |
-| 400 | Bad Request | Invalid parameters |
-| 404 | Not Found | Book doesn't exist |
-| 409 | Conflict | Duplicate book ID |
-| 422 | Validation Error | Invalid data |
-| 500 | Server Error | Unexpected error |
+| 200 | Success | GET request successful |
+| 201 | Created | POST request successful |
+| 204 | No Content | DELETE successful |
+| 400 | Bad Request | Invalid input |
+| 401 | Unauthorized | Missing token |
+| 404 | Not Found | Resource doesn't exist |
+| 409 | Conflict | ID already exists |
+| 500 | Server Error | API error |
 
 ---
 
-## 📝 Frontend Pages
+## Error Response Format
 
-| Page | URL | Purpose |
-|------|-----|---------|
-| 📖 Books | http://localhost:8501 | View/search books |
-| ✍️ Create Book | Click in sidebar | Add new book (auto ID) |
-| 👥 Authors | Click in sidebar | Manage authors |
-| 🏢 Publishers | Click in sidebar | Publisher stats |
-| 📋 Info & Links | Click in sidebar | This reference + Swagger access |
+```json
+{
+  "detail": "Error message describing what went wrong"
+}
+```
 
----
-
-## ✅ Verification Checklist
-
-- [ ] Frontend loads: http://localhost:8501
-- [ ] API healthy: http://localhost:8000/health
-- [ ] Database connected: http://localhost:8000/ready
-- [ ] Swagger accessible: http://localhost:8000/docs
-- [ ] Can get next ID: http://localhost:8000/books/next-id
-- [ ] Can list books: http://localhost:8000/books
-- [ ] Can create book: Use frontend form
-- [ ] Can test APIs: Use Swagger
+Example:
+```json
+{
+  "detail": "User with email admin@example.com already exists"
+}
+```
 
 ---
 
-**Version**: 1.0.0 | **Last Updated**: 2026-08-31 | **Status**: ✅ Production Ready
+## Testing with Swagger UI
+
+### Access Swagger
+Go to: **http://localhost:8000/docs**
+
+### Steps to Test
+1. Open Swagger UI
+2. Click "Authorize" button
+3. Use endpoint `/auth/login` to get token
+4. Paste token in Authorization
+5. Test any endpoint
+
+### Example Test Flow
+```
+1. POST /auth/login
+   - Email: admin@example.com
+   - Password: admin@123
+   - Get access_token
+
+2. Click "Authorize"
+   - Paste: Bearer <access_token>
+
+3. GET /books
+   - Execute
+   - See results
+
+4. POST /books
+   - Fill body with book data
+   - Execute
+   - See created book
+```
+
+---
+
+## Testing with cURL
+
+### Login and Get Token
+```bash
+curl -X POST http://localhost:8000/auth/login \
+  -H "Content-Type: application/json" \
+  -d '{"email":"admin@example.com","password":"admin@123"}'
+```
+
+### Use Token in Request
+```bash
+curl -H "Authorization: Bearer <token>" \
+  http://localhost:8000/books
+```
+
+### Create Book
+```bash
+curl -X POST http://localhost:8000/books \
+  -H "Authorization: Bearer <token>" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "title":"Book Title",
+    "pages":300,
+    "author_id":1,
+    "publisher":"Publisher"
+  }'
+```
+
+---
+
+## Rate Limiting
+
+- No rate limiting currently implemented
+- Production deployment should add rate limiting
+
+---
+
+## Pagination
+
+All list endpoints support pagination:
+
+```
+GET /books?page=1&limit=10
+GET /authors?page=2&limit=5
+```
+
+Parameters:
+- `page`: Page number (starts at 1)
+- `limit`: Items per page (default: 10)
+
+Response includes:
+- `total`: Total items in database
+- `page`: Current page
+- `limit`: Items per page
+- `items`: Array of results
+
+---
+
+## Demo Credentials
+
+| Email | Password |
+|-------|----------|
+| admin@example.com | admin@123 |
+| john@example.com | john@1234 |
+| jane@example.com | jane@1234 |
+| developer@example.com | dev@12345 |
+| demo@example.com | demo@1234 |
+
+---
+
+## API Health Check
+
+### Simple Health Check
+```
+GET http://localhost:8000/health
+
+Response:
+{
+  "status": "healthy",
+  "service": "Book Library API"
+}
+```
+
+### Full Readiness Check
+```
+GET http://localhost:8000/ready
+
+Response:
+{
+  "status": "ready",
+  "service": "Book Library API",
+  "database": "connected",
+  "collections": 3
+}
+```
+
+---
+
+## Database Schema
+
+### Books Collection
+```
+{
+  "_id": ObjectId,
+  "id": 1,
+  "title": "string",
+  "pages": 300,
+  "author_id": 1,
+  "publisher": "string",
+  "tags": ["tag1", "tag2"]
+}
+```
+
+### Authors Collection
+```
+{
+  "_id": ObjectId,
+  "id": 1,
+  "name": "string",
+  "birth_date": "ISO date string"
+}
+```
+
+### Users Collection
+```
+{
+  "_id": ObjectId,
+  "id": 1,
+  "email": "string",
+  "name": "string",
+  "password_hash": "hashed string"
+}
+```
+
+---
+
+## Integration Examples
+
+### JavaScript/Fetch
+```javascript
+async function getBooks() {
+  const response = await fetch('http://localhost:8000/books', {
+    headers: {
+      'Authorization': `Bearer ${token}`
+    }
+  });
+  return response.json();
+}
+```
+
+### Python/Requests
+```python
+import requests
+
+headers = {'Authorization': f'Bearer {token}'}
+response = requests.get('http://localhost:8000/books', headers=headers)
+books = response.json()
+```
+
+---
+
+## More Information
+
+- **Full Documentation**: See [README.md](README.md)
+- **Dashboard Guide**: See [USER_GUIDE.md](USER_GUIDE.md)
+- **Quick Reference**: See [QUICK_REFERENCE.md](QUICK_REFERENCE.md)
+
+---
+
+**Ready to test? Go to http://localhost:8000/docs**
