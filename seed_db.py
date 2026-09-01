@@ -2,6 +2,7 @@
 
 import asyncio
 import warnings
+from datetime import datetime
 
 warnings.filterwarnings('ignore', category=DeprecationWarning)
 
@@ -69,7 +70,8 @@ async def seed():
         },
     ]
 
-    # Seed books
+    # Seed books with timestamps
+    now = datetime.utcnow()
     sample_books = [
         {
             'id': 1,
@@ -77,7 +79,9 @@ async def seed():
             'pages': 1648,
             'author_id': 1,
             'publisher': "O'Reilly Media",
-            'tags': ['Python', 'Development', 'Learning']
+            'tags': ['Python', 'Development', 'Learning'],
+            'created_at': now,
+            'updated_at': now
         },
         {
             'id': 2,
@@ -85,7 +89,9 @@ async def seed():
             'pages': 304,
             'author_id': 2,
             'publisher': "O'Reilly Media",
-            'tags': ['Python', 'Development', 'Architecture']
+            'tags': ['Python', 'Development', 'Architecture'],
+            'created_at': now,
+            'updated_at': now
         },
     ]
 

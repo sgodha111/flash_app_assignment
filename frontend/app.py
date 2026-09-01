@@ -188,19 +188,6 @@ if not st.session_state.auth_token:
         st.divider()
         st.write("")
 
-        st.markdown("### 👥 Demo Users")
-        st.info("""
-        **Admin User:**
-        - Email: `admin@example.com`
-        - Password: `admin@123`
-
-        **Other Users:**
-        - john@example.com / john@1234
-        - jane@example.com / jane@1234
-        - developer@example.com / dev@12345
-        - demo@example.com / demo@1234
-        """)
-
     st.stop()
 
 try:
@@ -227,7 +214,7 @@ col1, col2, col3 = st.columns([3, 1, 1])
 with col1:
     st.markdown("""
         <div class="dashboard-header">
-            <h1>📚 Book Catalog Dashboard</h1>
+            <h1>📚 Book Library Dashboard</h1>
             <p>Manage your book collection with ease</p>
         </div>
         """, unsafe_allow_html=True)
