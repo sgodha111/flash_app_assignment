@@ -6,9 +6,11 @@ from datetime import datetime, timezone
 from typing import AsyncGenerator
 
 import pytest
+from httpx import AsyncClient
 
 from app.config import settings
 from app.database.mongodb import MongoDB
+from app.main import app
 
 # Counter for generating unique test IDs
 _test_counter = 0
@@ -89,6 +91,13 @@ async def sample_book_data(db, sample_author_data: dict) -> dict:
     }
     await db["books"].insert_one(book)
     return book
+
+
+@pytest.fixture
+async def client() -> AsyncGenerator:
+    """Provide an async test client."""
+    async with AsyncClient(app=app, base_url="http://test") as async_client:
+        yield async_client
 
 
 @pytest.fixture

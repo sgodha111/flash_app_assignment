@@ -28,7 +28,7 @@ class TestCreateBook:
         author = {"id": 1, "name": "Mark Lutz"}
         await db["authors"].insert_one(author)
 
-        response = client.post(
+        response = await client.post(
             "/books",
             json={
                 "id": 1,
@@ -69,7 +69,7 @@ class TestCreateBook:
         )
 
         # Try to create another with same ID
-        response = client.post(
+        response = await client.post(
             "/books",
             json={
                 "id": 1,
@@ -85,7 +85,7 @@ class TestCreateBook:
     @pytest.mark.asyncio
     async def test_create_book_invalid_author(self, db, client: TestClient):
         """Test creating book with non-existent author."""
-        response = client.post(
+        response = await client.post(
             "/books",
             json={
                 "id": 1,
@@ -107,7 +107,7 @@ class TestGetBook:
         self, db, client: TestClient, sample_book_data: dict
     ):
         """Test successful book retrieval."""
-        response = client.get(f"/books/{sample_book_data['id']}")
+        response = await client.get(f"/books/{sample_book_data['id']}")
 
         assert response.status_code == 200
         data = response.json()
@@ -117,7 +117,7 @@ class TestGetBook:
     @pytest.mark.asyncio
     async def test_get_book_not_found(self, client: TestClient):
         """Test retrieving non-existent book."""
-        response = client.get("/books/999")
+        response = await client.get("/books/999")
 
         assert response.status_code == 404
 
@@ -128,7 +128,7 @@ class TestListBooks:
     @pytest.mark.asyncio
     async def test_list_books_empty(self, db, client: TestClient):
         """Test listing books when none exist."""
-        response = client.get("/books")
+        response = await client.get("/books")
 
         assert response.status_code == 200
         data = response.json()
@@ -142,7 +142,7 @@ class TestListBooks:
         self, db, client: TestClient, sample_author_with_books: dict
     ):
         """Test books pagination."""
-        response = client.get("/books?page=1&limit=2")
+        response = await client.get("/books?page=1&limit=2")
 
         assert response.status_code == 200
         data = response.json()
@@ -156,7 +156,7 @@ class TestListBooks:
         self, db, client: TestClient, sample_author_with_books: dict
     ):
         """Test filtering books by author."""
-        response = client.get("/books?author_id=1")
+        response = await client.get("/books?author_id=1")
 
         assert response.status_code == 200
         data = response.json()
@@ -168,7 +168,7 @@ class TestListBooks:
         self, db, client: TestClient, sample_author_with_books: dict
     ):
         """Test filtering books by title."""
-        response = client.get("/books?title=Learning")
+        response = await client.get("/books?title=Learning")
 
         assert response.status_code == 200
         data = response.json()
@@ -180,7 +180,7 @@ class TestListBooks:
         self, db, client: TestClient, sample_author_with_books: dict
     ):
         """Test filtering books by tags."""
-        response = client.get("/books?tags=Development")
+        response = await client.get("/books?tags=Development")
 
         assert response.status_code == 200
         data = response.json()
@@ -192,7 +192,7 @@ class TestListBooks:
         self, db, client: TestClient, sample_author_with_books: dict
     ):
         """Test combining multiple filters."""
-        response = client.get("/books?author_id=1&tags=Python")
+        response = await client.get("/books?author_id=1&tags=Python")
 
         assert response.status_code == 200
         data = response.json()
@@ -208,7 +208,7 @@ class TestUpdateBook:
         self, db, client: TestClient, sample_book_data: dict
     ):
         """Test successful book update."""
-        response = client.patch(
+        response = await client.patch(
             f"/books/{sample_book_data['id']}",
             json={"title": "Updated Title"},
         )
@@ -225,7 +225,7 @@ class TestUpdateBook:
         """Test partial book update."""
         original_pages = sample_book_data["pages"]
 
-        response = client.patch(
+        response = await client.patch(
             f"/books/{sample_book_data['id']}",
             json={"title": "New Title"},
         )
@@ -238,7 +238,7 @@ class TestUpdateBook:
     @pytest.mark.asyncio
     async def test_update_book_not_found(self, client: TestClient):
         """Test updating non-existent book."""
-        response = client.patch(
+        response = await client.patch(
             "/books/999",
             json={"title": "New Title"},
         )
@@ -250,7 +250,7 @@ class TestUpdateBook:
         self, db, client: TestClient, sample_book_data: dict
     ):
         """Test updating with invalid author."""
-        response = client.patch(
+        response = await client.patch(
             f"/books/{sample_book_data['id']}",
             json={"author_id": 999},
         )
@@ -266,7 +266,7 @@ class TestDeleteBook:
         self, db, client: TestClient, sample_book_data: dict
     ):
         """Test successful book deletion."""
-        response = client.delete(f"/books/{sample_book_data['id']}")
+        response = await client.delete(f"/books/{sample_book_data['id']}")
 
         assert response.status_code == 204
 
@@ -277,6 +277,6 @@ class TestDeleteBook:
     @pytest.mark.asyncio
     async def test_delete_book_not_found(self, client: TestClient):
         """Test deleting non-existent book."""
-        response = client.delete("/books/999")
+        response = await client.delete("/books/999")
 
         assert response.status_code == 404

@@ -3,17 +3,9 @@
 from datetime import datetime, timezone
 
 import pytest
-from fastapi.testclient import TestClient
+from httpx import AsyncClient
 
 from app.config import settings
-from app.main import app
-
-
-@pytest.fixture
-async def client(db) -> TestClient:
-    """Provide a test client."""
-    settings.ENVIRONMENT = "testing"
-    return TestClient(app)
 
 
 class TestPublisherAveragePages:
@@ -61,7 +53,7 @@ class TestPublisherAveragePages:
         ]
         await db["books"].insert_many(books)
 
-        response = client.get("/publishers/O'Reilly%20Media/average_pages")
+        response = await client.get("/publishers/O'Reilly%20Media/average_pages")
 
         assert response.status_code == 200
         data = response.json()
@@ -72,7 +64,7 @@ class TestPublisherAveragePages:
     @pytest.mark.asyncio
     async def test_average_pages_not_found(self, client: TestClient):
         """Test getting average pages for non-existent publisher."""
-        response = client.get("/publishers/NonExistent/average_pages")
+        response = await client.get("/publishers/NonExistent/average_pages")
 
         assert response.status_code == 404
 

@@ -1,17 +1,9 @@
 """Integration tests for authors API."""
 
 import pytest
-from fastapi.testclient import TestClient
+from httpx import AsyncClient
 
 from app.config import settings
-from app.main import app
-
-
-@pytest.fixture
-async def client(db) -> TestClient:
-    """Provide a test client."""
-    settings.ENVIRONMENT = "testing"
-    return TestClient(app)
 
 
 class TestListAuthors:
@@ -22,7 +14,7 @@ class TestListAuthors:
         self, db, client: TestClient, sample_author_with_books: dict
     ):
         """Test listing authors with book count."""
-        response = client.get("/authors")
+        response = await client.get("/authors")
 
         assert response.status_code == 200
         data = response.json()
@@ -42,7 +34,7 @@ class TestListAuthors:
         self, db, client: TestClient, sample_author_with_books: dict
     ):
         """Test authors pagination."""
-        response = client.get("/authors?page=1&limit=2")
+        response = await client.get("/authors?page=1&limit=2")
 
         assert response.status_code == 200
         data = response.json()
@@ -60,7 +52,7 @@ class TestGetAuthorBooks:
         self, db, client: TestClient, sample_author_with_books: dict
     ):
         """Test getting books for an author."""
-        response = client.get("/authors/1/books")
+        response = await client.get("/authors/1/books")
 
         assert response.status_code == 200
         data = response.json()
@@ -72,7 +64,7 @@ class TestGetAuthorBooks:
         self, db, client: TestClient, sample_author_with_books: dict
     ):
         """Test getting books for author with no books."""
-        response = client.get("/authors/3/books")
+        response = await client.get("/authors/3/books")
 
         assert response.status_code == 200
         data = response.json()
@@ -81,6 +73,6 @@ class TestGetAuthorBooks:
     @pytest.mark.asyncio
     async def test_get_author_books_not_found(self, client: TestClient):
         """Test getting books for non-existent author."""
-        response = client.get("/authors/999/books")
+        response = await client.get("/authors/999/books")
 
         assert response.status_code == 404
