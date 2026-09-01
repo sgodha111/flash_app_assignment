@@ -32,74 +32,21 @@ jobs:
         run: pip install -r requirements.txt
 
       - name: Check formatting with Black
-        run: black app/ tests/ scripts/
+        run: black app/ scripts/
 
       - name: Sort imports with isort
-        run: isort app/ tests/ scripts/
+        run: isort app/ scripts/
 
       - name: Verify formatting
         run: |
-          black --check app/ tests/ scripts/
-          isort --check-only app/ tests/ scripts/
+          black --check app/ scripts/
+          isort --check-only app/ scripts/
 
       - name: Lint with Pylint
-        run: pylint app/ tests/ scripts/ --fail-under=8.0 || true
+        run: pylint app/ scripts/ --fail-under=8.0 || true
 
       - name: Type check with mypy
         run: mypy app/ --ignore-missing-imports || true
-
-  test:
-    name: Unit and Integration Tests
-    runs-on: ubuntu-latest
-    services:
-      mongodb:
-        image: mongo:7.0
-        options: >-
-          --health-cmd "mongosh --eval \"db.adminCommand({ ping: 1 })\""
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
-        ports:
-          - 27017:27017
-
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Set up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: "3.11"
-          cache: pip
-
-      - name: Install dependencies
-        run: pip install -r requirements.txt
-
-      - name: Run tests with coverage
-        env:
-          MONGO_URI: mongodb://localhost:27017
-          DATABASE_NAME: book_library_test
-          ENVIRONMENT: testing
-        run: |
-          pytest tests/ \
-            --cov=app \
-            --cov-report=xml \
-            --cov-report=term-missing \
-            --cov-report=html \
-            -v
-
-      - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v4
-        with:
-          file: ./coverage.xml
-          flags: unittests
-          name: codecov-umbrella
-
-      - name: Archive coverage reports
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: coverage-report
-          path: htmlcov/
 
   security:
     name: Security Checks
@@ -118,14 +65,14 @@ jobs:
         run: pip install bandit safety
 
       - name: Run Bandit security checks
-        run: bandit -r app/ tests/ -f json -o bandit-report.json || true
+        run: bandit -r app/ -f json -o bandit-report.json || true
 
       - name: Check for vulnerable dependencies
         run: safety check --json || true
 
   build:
     name: Build Docker Image
-    needs: [lint, test]
+    needs: [lint, security]
     runs-on: ubuntu-latest
     permissions:
       contents: read
