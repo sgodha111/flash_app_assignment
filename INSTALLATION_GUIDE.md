@@ -142,18 +142,6 @@ docker images | grep book-library
 docker volume ls | grep book-library
 ```
 
-### Reinstall After Cleanup
-
-```bash
-docker-compose build
-docker-compose up -d
-sleep 20
-docker-compose exec api python3 seed_db.py
-```
-
-Then access: **http://localhost:8501**
-
----
 
 ## ⚠️ Installation Issues
 

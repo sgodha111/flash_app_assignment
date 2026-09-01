@@ -12,11 +12,16 @@ A production-ready REST API and web dashboard for managing books, authors, and p
 ```bash
 docker-compose up -d
 ```
+### Step 2: Seed Database with Demo Data
 
-### Step 2: Access Dashboard
+```bash
+docker-compose exec api python3 seed_db.py
+```
+
+### Step 3: Access Dashboard
 **http://localhost:8501**
 
-### Step 3: Login with Demo Account
+### Step 4: Login with Demo Account
 ```
 Email: admin@example.com
 Password: admin@123
@@ -249,17 +254,6 @@ All users have full access to all features.
    - 📖 Books → Search for your book
    - 🏢 Publishers → Select publisher → View stats
 ```
-
----
-
-## 🚀 Next Steps
-
-- **Installing?** → Follow [INSTALLATION_GUIDE.md](INSTALLATION_GUIDE.md)
-- **Using dashboard?** → Read [USER_GUIDE.md](USER_GUIDE.md)
-- **Building API integration?** → Check [API_REFERENCE.md](API_REFERENCE.md)
-- **Quick lookup needed?** → See [QUICK_REFERENCE.md](QUICK_REFERENCE.md)
-
----
 
 ## 💾 Data Persistence
 
