@@ -1,11 +1,10 @@
 """Integration tests for books API."""
 
-from datetime import datetime, date
+from datetime import date, datetime
 from typing import AsyncGenerator
 
 import pytest
 from fastapi.testclient import TestClient
-
 
 from app.config import settings
 from app.database.mongodb import MongoDB
@@ -104,7 +103,9 @@ class TestGetBook:
     """Test book retrieval endpoint."""
 
     @pytest.mark.asyncio
-    async def test_get_book_success(self, db, client: TestClient, sample_book_data: dict):
+    async def test_get_book_success(
+        self, db, client: TestClient, sample_book_data: dict
+    ):
         """Test successful book retrieval."""
         response = client.get(f"/books/{sample_book_data['id']}")
 
@@ -137,7 +138,9 @@ class TestListBooks:
         assert data["total"] == 0
 
     @pytest.mark.asyncio
-    async def test_list_books_pagination(self, db, client: TestClient, sample_author_with_books: dict):
+    async def test_list_books_pagination(
+        self, db, client: TestClient, sample_author_with_books: dict
+    ):
         """Test books pagination."""
         response = client.get("/books?page=1&limit=2")
 
@@ -149,7 +152,9 @@ class TestListBooks:
         assert data["total"] == 3
 
     @pytest.mark.asyncio
-    async def test_list_books_filter_by_author(self, db, client: TestClient, sample_author_with_books: dict):
+    async def test_list_books_filter_by_author(
+        self, db, client: TestClient, sample_author_with_books: dict
+    ):
         """Test filtering books by author."""
         response = client.get("/books?author_id=1")
 
@@ -159,7 +164,9 @@ class TestListBooks:
         assert all(book["author_id"] == 1 for book in data["items"])
 
     @pytest.mark.asyncio
-    async def test_list_books_filter_by_title(self, db, client: TestClient, sample_author_with_books: dict):
+    async def test_list_books_filter_by_title(
+        self, db, client: TestClient, sample_author_with_books: dict
+    ):
         """Test filtering books by title."""
         response = client.get("/books?title=Learning")
 
@@ -169,7 +176,9 @@ class TestListBooks:
         assert "Learning" in data["items"][0]["title"]
 
     @pytest.mark.asyncio
-    async def test_list_books_filter_by_tags(self, db, client: TestClient, sample_author_with_books: dict):
+    async def test_list_books_filter_by_tags(
+        self, db, client: TestClient, sample_author_with_books: dict
+    ):
         """Test filtering books by tags."""
         response = client.get("/books?tags=Development")
 
@@ -179,7 +188,9 @@ class TestListBooks:
         assert "Development" in data["items"][0]["tags"]
 
     @pytest.mark.asyncio
-    async def test_list_books_combine_filters(self, db, client: TestClient, sample_author_with_books: dict):
+    async def test_list_books_combine_filters(
+        self, db, client: TestClient, sample_author_with_books: dict
+    ):
         """Test combining multiple filters."""
         response = client.get("/books?author_id=1&tags=Python")
 
@@ -193,7 +204,9 @@ class TestUpdateBook:
     """Test book update endpoint."""
 
     @pytest.mark.asyncio
-    async def test_update_book_success(self, db, client: TestClient, sample_book_data: dict):
+    async def test_update_book_success(
+        self, db, client: TestClient, sample_book_data: dict
+    ):
         """Test successful book update."""
         response = client.patch(
             f"/books/{sample_book_data['id']}",
@@ -206,7 +219,9 @@ class TestUpdateBook:
         assert data["id"] == sample_book_data["id"]
 
     @pytest.mark.asyncio
-    async def test_update_book_partial(self, db, client: TestClient, sample_book_data: dict):
+    async def test_update_book_partial(
+        self, db, client: TestClient, sample_book_data: dict
+    ):
         """Test partial book update."""
         original_pages = sample_book_data["pages"]
 
@@ -231,7 +246,9 @@ class TestUpdateBook:
         assert response.status_code == 404
 
     @pytest.mark.asyncio
-    async def test_update_book_invalid_author(self, db, client: TestClient, sample_book_data: dict):
+    async def test_update_book_invalid_author(
+        self, db, client: TestClient, sample_book_data: dict
+    ):
         """Test updating with invalid author."""
         response = client.patch(
             f"/books/{sample_book_data['id']}",
@@ -245,7 +262,9 @@ class TestDeleteBook:
     """Test book deletion endpoint."""
 
     @pytest.mark.asyncio
-    async def test_delete_book_success(self, db, client: TestClient, sample_book_data: dict):
+    async def test_delete_book_success(
+        self, db, client: TestClient, sample_book_data: dict
+    ):
         """Test successful book deletion."""
         response = client.delete(f"/books/{sample_book_data['id']}")
 

@@ -6,9 +6,9 @@ from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.staticfiles import StaticFiles
-from fastapi.openapi.utils import get_openapi
 from fastapi.openapi.docs import get_redoc_html
+from fastapi.openapi.utils import get_openapi
+from fastapi.staticfiles import StaticFiles
 
 from app.api.routes import auth, authors, books, health, publishers
 from app.config import settings

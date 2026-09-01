@@ -46,7 +46,9 @@ async def get_current_user(
             detail="Not authenticated",
         )
 
-    token = credentials.credentials if hasattr(credentials, 'credentials') else credentials
+    token = (
+        credentials.credentials if hasattr(credentials, "credentials") else credentials
+    )
     token_data = AuthService.decode_token(token)
 
     if token_data is None:
@@ -154,9 +156,7 @@ async def refresh(
         )
 
     access_token = AuthService.create_access_token(user["id"], user["email"])
-    new_refresh_token = AuthService.create_refresh_token(
-        user["id"], user["email"]
-    )
+    new_refresh_token = AuthService.create_refresh_token(user["id"], user["email"])
 
     logger.info(f"Token refreshed for user: {user['email']}")
 

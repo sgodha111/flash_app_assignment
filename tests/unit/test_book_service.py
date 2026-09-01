@@ -1,9 +1,10 @@
 """Unit tests for book service."""
 
-import pytest
 from datetime import datetime, timezone
 
-from app.schemas.book import BookCreate, BookUpdate, BookResponse
+import pytest
+
+from app.schemas.book import BookCreate, BookResponse, BookUpdate
 from app.services.book_service import BookService
 
 
@@ -99,7 +100,9 @@ class TestBookService:
         assert result["page"] == 1
         assert result["limit"] == 2
 
-    async def test_list_books_filter_by_author(self, db, sample_author_with_books: dict):
+    async def test_list_books_filter_by_author(
+        self, db, sample_author_with_books: dict
+    ):
         """Test filtering books by author."""
         service = BookService(db)
 

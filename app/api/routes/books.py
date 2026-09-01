@@ -5,7 +5,6 @@ from typing import List, Optional
 
 from fastapi import APIRouter, Depends, HTTPException, Query
 
-
 from app.config import settings
 from app.database.mongodb import get_database
 from app.schemas.book import BookCreate, BookListResponse, BookResponse, BookUpdate

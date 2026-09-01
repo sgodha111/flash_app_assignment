@@ -4,7 +4,6 @@ import logging
 from typing import Optional
 
 from fastapi import APIRouter, Depends, HTTPException, Query
-
 from pydantic import BaseModel
 
 from app.database.mongodb import get_database

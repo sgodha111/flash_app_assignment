@@ -4,8 +4,6 @@ import logging
 from datetime import datetime, timezone
 from typing import List, Optional, Tuple
 
-
-
 logger = logging.getLogger(__name__)
 
 
@@ -53,12 +51,7 @@ class BookRepository:
             query["tags"] = {"$in": tags}
 
         skip = (page - 1) * limit
-        books = (
-            await self.collection.find(query)
-            .skip(skip)
-            .limit(limit)
-            .to_list(limit)
-        )
+        books = await self.collection.find(query).skip(skip).limit(limit).to_list(limit)
 
         total = await self.collection.count_documents(query)
 

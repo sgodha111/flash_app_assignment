@@ -3,8 +3,6 @@
 import logging
 from typing import List
 
-
-
 from app.repositories.author_repository import AuthorRepository
 from app.repositories.book_repository import BookRepository
 from app.schemas.author import AuthorCreate, AuthorResponse, AuthorWithBookCount

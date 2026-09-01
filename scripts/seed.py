@@ -3,7 +3,7 @@
 import asyncio
 import logging
 import os
-from datetime import datetime, timezone, date
+from datetime import date, datetime, timezone
 
 from motor.motor_asyncio import AsyncIOMotorClient
 

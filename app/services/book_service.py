@@ -3,10 +3,8 @@
 import logging
 from typing import List, Optional
 
-
-
-from app.repositories.book_repository import BookRepository
 from app.repositories.author_repository import AuthorRepository
+from app.repositories.book_repository import BookRepository
 from app.schemas.book import BookCreate, BookResponse, BookUpdate
 
 logger = logging.getLogger(__name__)

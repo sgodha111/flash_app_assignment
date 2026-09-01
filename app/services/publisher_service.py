@@ -3,8 +3,6 @@
 import logging
 from typing import Optional
 
-
-
 logger = logging.getLogger(__name__)
 
 
@@ -18,11 +16,7 @@ class PublisherService:
     async def get_average_pages(self, publisher_name: str) -> Optional[float]:
         """Get average pages for books by a publisher using aggregation."""
         pipeline = [
-            {
-                "$match": {
-                    "publisher": publisher_name
-                }
-            },
+            {"$match": {"publisher": publisher_name}},
             {
                 "$group": {
                     "_id": "$publisher",

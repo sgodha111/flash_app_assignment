@@ -3,8 +3,6 @@
 import logging
 from typing import List, Optional, Tuple
 
-
-
 logger = logging.getLogger(__name__)
 
 
@@ -40,12 +38,7 @@ class AuthorRepository:
     ) -> Tuple[List[dict], int]:
         """List authors with pagination."""
         skip = (page - 1) * limit
-        authors = (
-            await self.collection.find()
-            .skip(skip)
-            .limit(limit)
-            .to_list(limit)
-        )
+        authors = await self.collection.find().skip(skip).limit(limit).to_list(limit)
 
         total = await self.collection.count_documents({})
 
@@ -54,7 +47,9 @@ class AuthorRepository:
 
     async def author_exists(self, author_id: int) -> bool:
         """Check if an author exists."""
-        author = await self.collection.find_one({"id": author_id}, projection={"_id": 1})
+        author = await self.collection.find_one(
+            {"id": author_id}, projection={"_id": 1}
+        )
         return author is not None
 
     async def list_all_with_book_count(self) -> List[dict]:
@@ -68,19 +63,9 @@ class AuthorRepository:
                     "as": "books",
                 }
             },
-            {
-                "$addFields": {
-                    "book_count": {"$size": "$books"}
-                }
-            },
-            {
-                "$project": {
-                    "books": 0
-                }
-            },
-            {
-                "$sort": {"id": 1}
-            },
+            {"$addFields": {"book_count": {"$size": "$books"}}},
+            {"$project": {"books": 0}},
+            {"$sort": {"id": 1}},
         ]
 
         result = await self.collection.aggregate(pipeline).to_list(None)
@@ -102,24 +87,12 @@ class AuthorRepository:
                     "as": "books",
                 }
             },
-            {
-                "$addFields": {
-                    "book_count": {"$size": "$books"}
-                }
-            },
-            {
-                "$project": {
-                    "books": 0
-                }
-            },
-            {
-                "$sort": {"id": 1}
-            },
+            {"$addFields": {"book_count": {"$size": "$books"}}},
+            {"$project": {"books": 0}},
+            {"$sort": {"id": 1}},
             {
                 "$facet": {
-                    "metadata": [
-                        {"$count": "total"}
-                    ],
+                    "metadata": [{"$count": "total"}],
                     "data": [
                         {"$skip": skip},
                         {"$limit": limit},

@@ -3,7 +3,6 @@
 import pytest
 from fastapi.testclient import TestClient
 
-
 from app.config import settings
 from app.main import app
 
@@ -19,7 +18,9 @@ class TestListAuthors:
     """Test authors list endpoint."""
 
     @pytest.mark.asyncio
-    async def test_list_authors_with_book_count(self, db, client: TestClient, sample_author_with_books: dict):
+    async def test_list_authors_with_book_count(
+        self, db, client: TestClient, sample_author_with_books: dict
+    ):
         """Test listing authors with book count."""
         response = client.get("/authors")
 
@@ -37,7 +38,9 @@ class TestListAuthors:
         assert author3["book_count"] == 0
 
     @pytest.mark.asyncio
-    async def test_list_authors_pagination(self, db, client: TestClient, sample_author_with_books: dict):
+    async def test_list_authors_pagination(
+        self, db, client: TestClient, sample_author_with_books: dict
+    ):
         """Test authors pagination."""
         response = client.get("/authors?page=1&limit=2")
 
@@ -53,7 +56,9 @@ class TestGetAuthorBooks:
     """Test get author books endpoint."""
 
     @pytest.mark.asyncio
-    async def test_get_author_books_success(self, db, client: TestClient, sample_author_with_books: dict):
+    async def test_get_author_books_success(
+        self, db, client: TestClient, sample_author_with_books: dict
+    ):
         """Test getting books for an author."""
         response = client.get("/authors/1/books")
 
@@ -63,7 +68,9 @@ class TestGetAuthorBooks:
         assert all(book["author_id"] == 1 for book in data)
 
     @pytest.mark.asyncio
-    async def test_get_author_books_no_books(self, db, client: TestClient, sample_author_with_books: dict):
+    async def test_get_author_books_no_books(
+        self, db, client: TestClient, sample_author_with_books: dict
+    ):
         """Test getting books for author with no books."""
         response = client.get("/authors/3/books")
 

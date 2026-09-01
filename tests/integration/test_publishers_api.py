@@ -5,7 +5,6 @@ from datetime import datetime, timezone
 import pytest
 from fastapi.testclient import TestClient
 
-
 from app.config import settings
 from app.main import app
 

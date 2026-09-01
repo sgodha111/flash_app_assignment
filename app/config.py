@@ -36,8 +36,7 @@ class Settings:
 
     # JWT
     JWT_SECRET_KEY: str = os.getenv(
-        "JWT_SECRET_KEY",
-        "your-secret-key-change-in-production-min-32-chars-123456789"
+        "JWT_SECRET_KEY", "your-secret-key-change-in-production-min-32-chars-123456789"
     )
     JWT_ALGORITHM: str = "HS256"
     JWT_EXPIRATION_HOURS: int = 24
