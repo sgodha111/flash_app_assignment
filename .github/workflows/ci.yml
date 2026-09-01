@@ -32,10 +32,15 @@ jobs:
         run: pip install -r requirements.txt
 
       - name: Check formatting with Black
-        run: black --check app/ tests/ scripts/
+        run: black app/ tests/ scripts/
 
       - name: Sort imports with isort
-        run: isort --check-only app/ tests/ scripts/
+        run: isort app/ tests/ scripts/
+
+      - name: Verify formatting
+        run: |
+          black --check app/ tests/ scripts/
+          isort --check-only app/ tests/ scripts/
 
       - name: Lint with Pylint
         run: pylint app/ tests/ scripts/ --fail-under=8.0 || true
@@ -83,7 +88,7 @@ jobs:
             -v
 
       - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v3
+        uses: codecov/codecov-action@v4
         with:
           file: ./coverage.xml
           flags: unittests
@@ -91,7 +96,7 @@ jobs:
 
       - name: Archive coverage reports
         if: always()
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: coverage-report
           path: htmlcov/
