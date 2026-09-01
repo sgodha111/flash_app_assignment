@@ -7,6 +7,8 @@ from httpx import AsyncClient
 
 from app.config import settings
 
+TestClient = AsyncClient  # Alias for compatibility
+
 
 class TestPublisherAveragePages:
     """Test publisher average pages endpoint."""

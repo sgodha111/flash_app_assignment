@@ -4,18 +4,12 @@ from datetime import date, datetime
 from typing import AsyncGenerator
 
 import pytest
-from fastapi.testclient import TestClient
+from httpx import AsyncClient
 
 from app.config import settings
 from app.database.mongodb import MongoDB
-from app.main import app
 
-
-@pytest.fixture
-async def client(db) -> TestClient:
-    """Provide a test client."""
-    settings.ENVIRONMENT = "testing"
-    return TestClient(app)
+TestClient = AsyncClient  # Alias for compatibility
 
 
 class TestCreateBook:
