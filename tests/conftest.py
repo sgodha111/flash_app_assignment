@@ -106,7 +106,11 @@ async def sample_author_with_books(db) -> dict:
     base_id = get_unique_id() * 100  # Use multiplied ID to avoid collisions
 
     authors = [
-        {"id": base_id, "name": "Mark Lutz", "birth_date": datetime(1957, 1, 1, tzinfo=timezone.utc)},
+        {
+            "id": base_id,
+            "name": "Mark Lutz",
+            "birth_date": datetime(1957, 1, 1, tzinfo=timezone.utc),
+        },
         {
             "id": base_id + 1,
             "name": "Harry Percival",
