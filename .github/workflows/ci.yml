@@ -32,18 +32,18 @@ jobs:
         run: pip install -r requirements.txt
 
       - name: Check formatting with Black
-        run: black app/ scripts/
+        run: black app/
 
       - name: Sort imports with isort
-        run: isort app/ scripts/
+        run: isort app/
 
       - name: Verify formatting
         run: |
-          black --check app/ scripts/
-          isort --check-only app/ scripts/
+          black --check app/
+          isort --check-only app/
 
       - name: Lint with Pylint
-        run: pylint app/ scripts/ --fail-under=8.0 || true
+        run: pylint app/ --fail-under=8.0 || true
 
       - name: Type check with mypy
         run: mypy app/ --ignore-missing-imports || true

@@ -13,7 +13,7 @@ Step-by-step guide to install and run the application.
 
 ---
 
-## 🚀 Installation (6 Steps)
+## 🚀 Installation (7 Steps)
 
 ### Step 1: Get the Project
 
@@ -52,7 +52,17 @@ docker-compose ps
 
 Should show 3 containers as "Up".
 
-### Step 6: Seed Database with Demo Data
+### Step 6: Clear Database (Fresh Installation Only)
+
+If this is a fresh installation OR you want to reset the database:
+
+```bash
+docker-compose exec mongodb mongosh --eval "use book_library; db.dropDatabase();"
+```
+
+Then continue to seeding.
+
+### Step 7: Seed Database with Demo Data
 
 ```bash
 docker-compose exec api python3 seed_db.py
@@ -60,6 +70,7 @@ docker-compose exec api python3 seed_db.py
 
 **Expected output**:
 ```
+(trapped) error reading bcrypt version    ← This is normal, ignore it
 ✅ Seeded 5 users
 ✅ Seeded 3 authors
 ✅ Seeded 2 books
@@ -74,7 +85,9 @@ docker-compose exec api python3 seed_db.py
 
 This way users see sample data when they first login, so Authors dropdown is pre-populated and they won't see empty lists.
 
-*Note*: Bcrypt warning may appear - this is harmless.
+**Note**: 
+- Bcrypt warning may appear - this is harmless and can be ignored
+- If seeding fails with "duplicate key error", run the database clear command above first
 
 ---
 
@@ -142,6 +155,8 @@ pytest tests/unit/test_book_service.py::test_book_service_get_all_books -v
 ---
 
 ## 🎉 Access Application
+
+All containers are running and database is seeded. You can now access the application!
 
 ### First Login
 ```
